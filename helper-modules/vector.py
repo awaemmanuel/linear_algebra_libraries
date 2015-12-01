@@ -5,7 +5,7 @@ getcontext().prec = 30
 
 class Vector(object):
     CANNOT_NORMALIZE_ZERO_VECTOR = 'Cannot normalize the zero vector'
-    NO_UNIQUE_ORTHOGONAL_COMPONENT_MSG
+    NO_UNIQUE_ORTHOGONAL_COMPONENT_MSG = 'No Unique Orthogonal components'
     def __init__(self, coordinates):
         try:
             if not coordinates:
@@ -35,6 +35,7 @@ class Vector(object):
         return Vector([round((x - y), 3) for x, y in zip(self.coordinates, v.coordinates)])
     
     def scalar_multiply(self, c):
+        #new_coordinates = [Decimal(c) * x for x in self.coordinates]
         return Vector([round((Decimal(c) * x), 3) for x in self.coordinates])
     
     def dot(self, v):
@@ -57,13 +58,13 @@ class Vector(object):
      
     
     def magnitude(self):
-        return round((sum(map(lambda x: x ** 2, self.coordinates)) ** 0.5), 3)
+        return round(sqrt(sum(map(lambda x: x ** 2, self.coordinates))), 3)
     
     def normalize(self):
         try:
         
             magnitude = self.magnitude()
-            return self.scalar_multiply(Decimal('1.0')/magnitude)
+            return self.scalar_multiply(Decimal('1.0') / Decimal(magnitude))
 
         except ZeroDivisionError:
             raise Exception(self.CANNOT_NORMALIZE_ZERO_VECTOR)
