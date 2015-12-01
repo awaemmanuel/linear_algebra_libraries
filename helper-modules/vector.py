@@ -6,6 +6,8 @@ getcontext().prec = 30
 class Vector(object):
     CANNOT_NORMALIZE_ZERO_VECTOR = 'Cannot normalize the zero vector'
     NO_UNIQUE_ORTHOGONAL_COMPONENT_MSG = 'No Unique Orthogonal components'
+    NO_UNIQUE_PARALLEL_COMPONENT_MSG = 'No Unique Parallel components'
+    ONLY_DEFINED_IN_TWO_THREE_DIMS_MSG = 'Only defined in 2 or 3 dimensions'
     def __init__(self, coordinates):
         try:
             if not coordinates:
@@ -115,6 +117,39 @@ class Vector(object):
             else:
                 raise e
     
+    '''
+        Cross product of two matrices
+    '''
+    def cross(self, v):
+        try:
+            x_1, y_1, z_1 = self.coordinates
+            x_2, y_2, z_2 = v.coordinates
+            return Vector([y_1*z_2 - y_2*z_1, -(x_1*z_2 - z_2*z_1), x_1*y_2 - x_2*y_1])
+        except ValueError as e:
+            msg = str(e)
+            if msg == 'need more than 2 values to unpack':
+                self_embedded_in_R3 = Vector(self.coordinates + ('0',))
+                v_embedded_in_R3 = Vector(v.coordinates + ('0',))
+                return self_embedded_in_R3.cross(v_embedded_in_R3)
+            elif (msg == 'too many values to unpack' or 
+                 msg == 'need more than 1 value to unpack'):
+                raise Exception(self.ONLY_DEFINED_IN_TWO_THREE_DIMS_MSG)
+            else:
+                raise e
+                
+    '''
+        Find area of a triangle bounded by two vectors
+    '''
+    def area_of_triangle_bounded_by(self, v):
+        return self.aread_of_parallelogram_bounded_by(v) / Decimal('2.0')
+    
+    
+    '''
+        Find area of a parallelogram bounded by two vectors
+    '''
+    def aread_of_parallelogram_bounded_by(self, v):
+        return self.cross(v).magnitude()
+    
     
 if __name__ == '__main__':
     a = Vector([8.218, -9.341])
@@ -144,4 +179,9 @@ if __name__ == '__main__':
     print "NORMALIZATIONS"
     print i.normalize()
     print j.normalize()
+    
+    print "CROSS"
+    v = Vector(['8.462', '7.893', '-8.187'])
+    w = Vector(['6.984', '-5.975', '4.778'])
+    print '#1: ', v.cross(w)
     
