@@ -1,7 +1,7 @@
 from math import acos, pi, sqrt
 from decimal import Decimal, getcontext
 
-getcontext().prec = 30
+getcontext().prec = 3
 
 class Vector(object):
     CANNOT_NORMALIZE_ZERO_VECTOR = 'Cannot normalize the zero vector'
